@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shift 3 Earnings Calculator | Charter Communications</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #003057;
+            --secondary: #00a8e8;
+            --accent: #ffc107;
+            --success: #28a745;
+            --warning: #ff6b35;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gradient-1: linear-gradient(135deg, #003057 0%, #00a8e8 100%);
+            --gradient-2: linear-gradient(135deg, #00a8e8 0%, #003057 100%);
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --shadow-hover: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: var(--gradient-1);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .shift-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--dark);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 968px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--light);
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input, .input-wrapper select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .input-wrapper input:focus, .input-wrapper select:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 4px rgba(0,168,232,0.1);
+        }
+
+        .input-wrapper .prefix {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            font-weight: 600;
+        }
+
+        .input-wrapper input.has-prefix {
+            padding-left: 40px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-box {
+            background: var(--gradient-1);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-box:hover {
+            transform: scale(1.05);
+        }
+
+        .stat-box.warning {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+        }
+
+        .stat-box.success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .stat-box.danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        .stat-box.info {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-sublabel {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .results-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-top: 25px;
+        }
+
+        .earnings-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .earning-item {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 5px solid var(--secondary);
+            transition: all 0.3s ease;
+        }
+
+        .earning-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .earning-item.bonus {
+            border-left-color: var(--accent);
+            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+        }
+
+        .earning-item.total {
+            border-left-color: var(--success);
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .earning-item.daily {
+            border-left-color: var(--warning);
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        }
+
+        .earning-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .earning-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .progress-section {
+            margin: 30px 0;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-1);
+            border-radius: 10px;
+            transition: width 1s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .daily-goals-panel {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-top: 25px;
+            display: none;
+        }
+
+        .daily-goals-panel.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .daily-goals-panel h3 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .goal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .goal-item {
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .goal-item:hover {
+            transform: translateY(-3px);
+            background: rgba(255,255,255,0.3);
+        }
+
+        .goal-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .goal-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .daily-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .daily-inputs {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .bracket-indicator {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        .bracket-1 { background: var(--success); color: white; }
+        .bracket-2 { background: var(--warning); color: white; }
+        .bracket-3 { background: var(--danger); color: white; }
+
+        .rate-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        .rate-table th, .rate-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .rate-table th {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        .rate-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .rate-table .current-bracket {
+            background: #fff3cd;
+            font-weight: 700;
+        }
+
+        .btn {
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0,48,87,0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,48,87,0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            color: var(--secondary);
+        }
+
+        .tooltip:hover::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            z-index: 1000;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .qualifiers-box {
+            background: #fff3cd;
+            border: 2px solid var(--accent);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .qualifiers-box.met {
+            background: #d4edda;
+            border-color: var(--success);
+        }
+
+        .qualifiers-title {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .qualifier-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .qualifier-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-icon {
+            font-weight: bold;
+        }
+
+        .status-met { color: var(--success); }
+        .status-unmet { color: var(--danger); }
+
+        .top-performer-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: var(--dark);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            box-shadow: 0 4px 10px rgba(255,215,0,0.3);
+        }
+
+        .calculator-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: white;
+            border: 2px solid #dee2e6;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--gradient-1);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .save-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            display: none;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 30px;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .disclaimer {
+            background: #f8f9fa;
+            border-left: 4px solid var(--secondary);
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 0 12px 12px 0;
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .strategy-box {
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .strategy-box h4 {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .strategy-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .strategy-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .strategy-list li:last-child {
+            border-bottom: none;
+        }
+
+        .projection-chart {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .projection-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            transition: background 0.3s ease;
+        }
+
+        .projection-row:hover {
+            background: #f8f9fa;
+        }
+
+        .projection-row.highlight {
+            background: #e7f3ff;
+            border-left: 4px solid var(--secondary);
+            font-weight: 600;
+        }
+
+        .scenario-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        .scenario-conservative { background: #ffc107; color: #000; }
+        .scenario-target { background: #17a2b8; color: white; }
+        .scenario-optimistic { background: #28a745; color: white; }
+
+        @media print {
+            .no-print { display: none; }
+            .card { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>💰 Shift 3 Earnings Calculator</h1>
+            <p>Charter Communications Residential Inbound Sales</p>
+            <span class="shift-badge">USCR3 Rate Card • Effective March 1, 2026</span>
+        </header>
+
+        <div class="calculator-tabs no-print">
+            <button class="tab-btn active" onclick="switchTab('calculator')">📊 Earnings Calculator</button>
+            <button class="tab-btn" onclick="switchTab('rates')">📋 Rate Card</button>
+            <button class="tab-btn" onclick="switchTab('history')">📈 History</button>
+        </div>
+
+        <div id="calculator" class="tab-content active">
+            <div class="grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">📞</div>
+                        <div class="card-title">Call & Sales Metrics</div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Total Acquisition Core Calls <span class="tooltip" data-tip="Total inbound sales calls handled">ℹ️</span></label>
+                        <div class="input-wrapper">
+                            <input type="number" id="totalCalls" placeholder="e.g., 185" min="0" onchange="calculate()">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Total Acquisition Internet Sales</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="internetSales" placeholder="e.g., 102" min="0" onchange="calculate()">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>AIY Target % <span class="tooltip" data-tip="Usually 50% for most shifts">ℹ️</span></label>
+                        <div class="input-wrapper">
+                            <input type="number" id="aiyTarget" value="50" min="0" max="100" onchange="calculate()">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Shift Target Core PSU + Lines <span class="tooltip" data-tip="Target for Top Performer Reward">ℹ️</span></label>
+                        <div class="input-wrapper">
+                            <input type="number" id="shiftTarget" value="200" min="0" onchange="calculate()">
+                        </div>
+                    </div>
+
+                    <hr style="margin: 25px 0; border: none; border-top: 2px solid #e9ecef;">
+
+                    <div class="card-header" style="margin-bottom: 15px;">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">📅</div>
+                        <div class="card-title">Daily Tracking</div>
+                    </div>
+
+                    <div class="daily-inputs">
+                        <div class="input-group">
+                            <label>Day of Month (1-31)</label>
+                            <input type="number" id="currentDay" min="1" max="31" onchange="calculate()">
+                        </div>
+                        <div class="input-group">
+                            <label>Days in Month</label>
+                            <input type="number" id="daysInMonth" value="22" min="1" max="31" onchange="calculate()">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Working Days Completed</label>
+                        <input type="number" id="daysWorked" placeholder="How many days have you worked?" min="0" onchange="calculate()">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">📦</div>
+                        <div class="card-title">Product Sales Volume</div>
+                    </div>
+
+                    <h4 style="margin-bottom: 15px; color: var(--primary);">Internet Core PSUs</h4>
+                    <div class="input-group">
+                        <label>Advantage or Lower</label>
+                        <input type="number" id="internetAdv" placeholder="0" min="0" onchange="calculate()">
+                    </div>
+                    <div class="input-group">
+                        <label>Premier</label>
+                        <input type="number" id="internetPrem" placeholder="0" min="0" onchange="calculate()">
+                    </div>
+                    <div class="input-group">
+                        <label>Gig</label>
+                        <input type="number" id="internetGig" placeholder="0" min="0" onchange="calculate()">
+                    </div>
+                    <div class="input-group">
+                        <label>2 Gig</label>
+                        <input type="number" id="internet2Gig" placeholder="0" min="0" onchange="calculate()">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">📺</div>
+                        <div class="card-title">Video & Voice</div>
+                    </div>
+
+                    <h4 style="margin-bottom: 15px; color: var(--primary);">Video Core PSUs</h4>
+                    <div class="input-group">
+                        <label>TV Stream/Choice/Essentials</label>
+                        <input type="number" id="videoChoice" placeholder="0" min="0" onchange="calculate()">
+                    </div>
+                    <div class="input-group">
+                        <label>Select, Mi Plan, and Higher</label>
+                        <input type="number" id="videoSelect" placeholder="0" min="0" onchange="calculate()">
+                    </div>
+
+                    <h4 style="margin: 20px 0 15px; color: var(--primary);">Voice</h4>
+                    <div class="input-group">
+                        <label>Voice Lines</label>
+                        <input type="number" id="voiceLines" placeholder="0" min="0" onchange="calculate()">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">📱</div>
+                        <div class="card-title">Mobile Lines</div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>By the Gig</label>
+                        <input type="number" id="mobileByGig" placeholder="0" min="0" onchange="calculate()">
+                    </div>
+                    <div class="input-group">
+                        <label>Unlimited</label>
+                        <input type="number" id="mobileUnlimited" placeholder="0" min="0" onchange="calculate()">
+                    </div>
+                    <div class="input-group">
+                        <label>Unlimited +</label>
+                        <input type="number" id="mobileUnlimitedPlus" placeholder="0" min="0" onchange="calculate()">
+                    </div>
+
+                    <div class="qualifiers-box" id="qualifiersBox">
+                        <div class="qualifiers-title">
+                            <span>⚠️</span> Minimum Qualifiers Status
+                        </div>
+                        <div class="qualifier-item">
+                            <span>Internet Core PSU (Min: 20)</span>
+                            <span id="qInternet" class="status-icon status-unmet">❌</span>
+                        </div>
+                        <div class="qualifier-item">
+                            <span>Video Core PSU (Min: 10)</span>
+                            <span id="qVideo" class="status-icon status-unmet">❌</span>
+                        </div>
+                        <div class="qualifier-item">
+                            <span>Mobile Lines (Min: 10)</span>
+                            <span id="qMobile" class="status-icon status-unmet">❌</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-grid" id="statsGrid" style="display: none;">
+                <div class="stat-box" id="aiyBox">
+                    <div class="stat-label">Sales AIY Attainment</div>
+                    <div class="stat-value" id="aiyDisplay">0%</div>
+                    <div class="stat-sublabel" id="aiyBracket">Bracket 3</div>
+                </div>
+                <div class="stat-box" id="volumeBox">
+                    <div class="stat-label">Total PSU + Lines</div>
+                    <div class="stat-value" id="volumeDisplay">0</div>
+                    <div class="stat-sublabel" id="volumeBracket">Bracket 3</div>
+                </div>
+                <div class="stat-box success" id="commissionBox">
+                    <div class="stat-label">Total Commission</div>
+                    <div class="stat-value" id="commissionDisplay">$0</div>
+                    <div class="stat-sublabel">Before Top Performer</div>
+                </div>
+                <div class="stat-box warning" id="tprBox">
+                    <div class="stat-label">Top Performer Reward</div>
+                    <div class="stat-value" id="tprDisplay">$0</div>
+                    <div class="stat-sublabel" id="tprTier">Not Eligible</div>
+                </div>
+            </div>
+
+            <div class="results-section" id="resultsSection" style="display: none;">
+                <h2 style="color: var(--primary); margin-bottom: 20px;">💵 Earnings Breakdown</h2>
+                
+                <div class="earnings-breakdown" id="earningsBreakdown">
+                    <!-- Dynamic content -->
+                </div>
+
+                <div class="progress-section">
+                    <div class="progress-header">
+                        <span>Progress to AIY Target</span>
+                        <span id="aiyProgressText">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="aiyProgressBar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="progress-section">
+                    <div class="progress-header">
+                        <span>Progress to Volume Target</span>
+                        <span id="volumeProgressText">0 / 0</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="volumeProgressBar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="action-buttons no-print">
+                    <button class="btn" onclick="saveCalculation()">
+                        💾 Save Calculation
+                    </button>
+                    <button class="btn btn-secondary" onclick="window.print()">
+                        🖨️ Print Report
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetForm()">
+                        🔄 Reset
+                    </button>
+                </div>
+            </div>
+
+            <!-- Daily Goals Panel - Now Integrated -->
+            <div class="daily-goals-panel" id="dailyGoalsPanel">
+                <h3>🎯 Daily Performance Dashboard</h3>
+                
+                <div class="goal-grid" id="dailyStatsGrid">
+                    <div class="goal-item">
+                        <div class="goal-number" id="dailyRequired">0</div>
+                        <div class="goal-label">Units/Day Needed</div>
+                    </div>
+                    <div class="goal-item">
+                        <div class="goal-number" id="daysRemaining">0</div>
+                        <div class="goal-label">Days Remaining</div>
+                    </div>
+                    <div class="goal-item">
+                        <div class="goal-number" id="currentPace">0</div>
+                        <div class="goal-label">Current Daily Pace</div>
+                    </div>
+                    <div class="goal-item">
+                        <div class="goal-number" id="projectedMonthly">0</div>
+                        <div class="goal-label">Projected Monthly Total</div>
+                    </div>
+                </div>
+
+                <div class="strategy-box">
+                    <h4>📊 Daily Earning Scenarios</h4>
+                    <div class="earnings-breakdown" id="dailyEarningsBreakdown" style="margin-top: 15px; color: #333;">
+                        <!-- Dynamic daily earnings -->
+                    </div>
+                </div>
+
+                <div class="strategy-box">
+                    <h4>💡 Action Plan</h4>
+                    <ul class="strategy-list" id="strategyList">
+                        <!-- Dynamic strategies -->
+                    </ul>
+                </div>
+
+                <div class="projection-chart" id="projectionChart">
+                    <h4 style="color: var(--primary); margin-bottom: 20px;">📈 Monthly Projection Scenarios</h4>
+                    <div id="projectionRows">
+                        <!-- Dynamic projection rows -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="rates" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📋</div>
+                    <div class="card-title">USCR3 Shift Rate Card</div>
+                </div>
+                <p style="margin-bottom: 20px;">Rates per unit based on bracket achievement. You must meet both AIY and Volume thresholds for your bracket.</p>
+                
+                <table class="rate-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Rate Factor</th>
+                            <th>Bracket 3<br>(0-90.99% AIY)<br>40-119 Vol</th>
+                            <th>Bracket 2<br>(91-99.99% AIY)<br>120-169 Vol</th>
+                            <th>Bracket 1<br>(100%+ AIY)<br>170+ Vol</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="5" style="background: #f8f9fa; font-weight: bold;">Internet</td>
+                        </tr>
+                        <tr>
+                            <td>Advantage or Lower</td>
+                            <td>25%</td>
+                            <td>$1.50</td>
+                            <td>$2.75</td>
+                            <td>$4.25</td>
+                        </tr>
+                        <tr>
+                            <td>Premier</td>
+                            <td>100%</td>
+                            <td>$5.25</td>
+                            <td>$10.50</td>
+                            <td>$15.75</td>
+                        </tr>
+                        <tr>
+                            <td>Gig</td>
+                            <td>125%</td>
+                            <td>$6.75</td>
+                            <td>$13.25</td>
+                            <td>$20.00</td>
+                        </tr>
+                        <tr>
+                            <td>2 Gig</td>
+                            <td>150%</td>
+                            <td>$8.00</td>
+                            <td>$15.75</td>
+                            <td>$23.75</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" style="background: #f8f9fa; font-weight: bold;">Video</td>
+                        </tr>
+                        <tr>
+                            <td>TV Stream/Choice</td>
+                            <td>50%</td>
+                            <td>$2.75</td>
+                            <td>$5.25</td>
+                            <td>$8.00</td>
+                        </tr>
+                        <tr>
+                            <td>Select/Mi Plan+</td>
+                            <td>90%</td>
+                            <td>$4.75</td>
+                            <td>$9.50</td>
+                            <td>$14.25</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" style="background: #f8f9fa; font-weight: bold;">Voice</td>
+                        </tr>
+                        <tr>
+                            <td>Voice</td>
+                            <td>25%</td>
+                            <td>$1.50</td>
+                            <td>$2.75</td>
+                            <td>$4.25</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" style="background: #f8f9fa; font-weight: bold;">Mobile</td>
+                        </tr>
+                        <tr>
+                            <td>By the Gig</td>
+                            <td>25%</td>
+                            <td>$1.50</td>
+                            <td>$2.75</td>
+                            <td>$4.25</td>
+                        </tr>
+                        <tr>
+                            <td>Unlimited</td>
+                            <td>125%</td>
+                            <td>$6.75</td>
+                            <td>$13.25</td>
+                            <td>$20.00</td>
+                        </tr>
+                        <tr>
+                            <td>Unlimited +</td>
+                            <td>150%</td>
+                            <td>$8.00</td>
+                            <td>$15.75</td>
+                            <td>$23.75</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="margin-top: 30px; padding: 20px; background: #e7f3ff; border-radius: 12px;">
+                    <h4 style="color: var(--primary); margin-bottom: 10px;">Top Performer Reward Tiers</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 8px 0; border-bottom: 1px solid #dee2e6;">
+                            <strong>Tier 1 (121%+ of Shift Target):</strong> $1,000.00
+                        </li>
+                        <li style="padding: 8px 0; border-bottom: 1px solid #dee2e6;">
+                            <strong>Tier 2 (111-120.99%):</strong> $750.00
+                        </li>
+                        <li style="padding: 8px 0;">
+                            <strong>Tier 3 (100-110.99%):</strong> $500.00
+                        </li>
+                    </ul>
+                    <p style="margin-top: 15px; font-size: 0.9rem; color: #6c757d;">
+                        *Must meet or exceed Sales AIY Shift Target AND Core PSU + Line Shift Target to qualify
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="history" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📈</div>
+                    <div class="card-title">Saved Calculations</div>
+                </div>
+                <div id="historyList">
+                    <p style="color: #6c757d; text-align: center; padding: 40px;">No saved calculations yet. Use the calculator and click "Save Calculation" to store your results.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="disclaimer">
+            <strong>Important:</strong> This calculator is for estimation purposes only. Actual commission payments are calculated by Charter's official systems and may vary based on additional factors including chargebacks, adjustments, and plan changes. Always verify with official commission statements. Effective March 1, 2026.
+        </div>
+
+        <footer>
+            <p>Charter Communications • Residential Inbound Sales • Shift 3 (USCR3)</p>
+            <p style="margin-top: 10px; font-size: 0.8rem;">Built for agents to maximize earning potential</p>
+        </footer>
+    </div>
+
+    <div class="save-notification" id="saveNotification">
+        Calculation saved successfully!
+    </div>
+
+    <script>
+        // USCR3 Rate Card Data
+        const rateCard = {
+            internet: {
+                adv: [1.50, 2.75, 4.25],
+                premier: [5.25, 10.50, 15.75],
+                gig: [6.75, 13.25, 20.00],
+                '2gig': [8.00, 15.75, 23.75]
+            },
+            video: {
+                choice: [2.75, 5.25, 8.00],
+                select: [4.75, 9.50, 14.25]
+            },
+            voice: [1.50, 2.75, 4.25],
+            mobile: {
+                byGig: [1.50, 2.75, 4.25],
+                unlimited: [6.75, 13.25, 20.00],
+                unlimitedPlus: [8.00, 15.75, 23.75]
+            }
+        };
+
+        const bracketThresholds = {
+            aiy: [90.99, 99.99, 999],
+            volume: [119, 169, 999]
+        };
+
+        const qualifiers = {
+            internet: 20,
+            video: 10,
+            mobile: 10
+        };
+
+        function calculate() {
+            const totalCalls = parseInt(document.getElementById('totalCalls').value) || 0;
+            const internetSales = parseInt(document.getElementById('internetSales').value) || 0;
+            const aiyTarget = parseFloat(document.getElementById('aiyTarget').value) || 50;
+            const shiftTarget = parseInt(document.getElementById('shiftTarget').value) || 200;
+
+            // Daily tracking inputs
+            const currentDay = parseInt(document.getElementById('currentDay').value) || 0;
+            const daysInMonth = parseInt(document.getElementById('daysInMonth').value) || 22;
+            const daysWorked = parseInt(document.getElementById('daysWorked').value) || 0;
+
+            // Product volumes
+            const internetAdv = parseInt(document.getElementById('internetAdv').value) || 0;
+            const internetPrem = parseInt(document.getElementById('internetPrem').value) || 0;
+            const internetGig = parseInt(document.getElementById('internetGig').value) || 0;
+            const internet2Gig = parseInt(document.getElementById('internet2Gig').value) || 0;
+            
+            const videoChoice = parseInt(document.getElementById('videoChoice').value) || 0;
+            const videoSelect = parseInt(document.getElementById('videoSelect').value) || 0;
+            
+            const voiceLines = parseInt(document.getElementById('voiceLines').value) || 0;
+            
+            const mobileByGig = parseInt(document.getElementById('mobileByGig').value) || 0;
+            const mobileUnlimited = parseInt(document.getElementById('mobileUnlimited').value) || 0;
+            const mobileUnlimitedPlus = parseInt(document.getElementById('mobileUnlimitedPlus').value) || 0;
+
+            // Calculate totals
+            const totalInternet = internetAdv + internetPrem + internetGig + internet2Gig;
+            const totalVideo = videoChoice + videoSelect;
+            const totalMobile = mobileByGig + mobileUnlimited + mobileUnlimitedPlus;
+            const totalPSU = totalInternet + totalVideo + voiceLines;
+            const totalVolume = totalPSU + totalMobile;
+
+            // Check qualifiers
+            const qInternet = totalInternet >= qualifiers.internet;
+            const qVideo = totalVideo >= qualifiers.video;
+            const qMobile = totalMobile >= qualifiers.mobile;
+            const allQualifiersMet = qInternet && qVideo && qMobile;
+
+            // Update qualifier UI
+            document.getElementById('qInternet').textContent = qInternet ? '✅' : '❌';
+            document.getElementById('qInternet').className = 'status-icon ' + (qInternet ? 'status-met' : 'status-unmet');
+            document.getElementById('qVideo').textContent = qVideo ? '✅' : '❌';
+            document.getElementById('qVideo').className = 'status-icon ' + (qVideo ? 'status-met' : 'status-unmet');
+            document.getElementById('qMobile').textContent = qMobile ? '✅' : '❌';
+            document.getElementById('qMobile').className = 'status-icon ' + (qMobile ? 'status-met' : 'status-unmet');
+            
+            const qBox = document.getElementById('qualifiersBox');
+            if (allQualifiersMet) {
+                qBox.classList.add('met');
+                qBox.querySelector('.qualifiers-title').innerHTML = '<span>✅</span> All Minimum Qualifiers Met';
+            } else {
+                qBox.classList.remove('met');
+                qBox.querySelector('.qualifiers-title').innerHTML = '<span>⚠️</span> Minimum Qualifiers Status';
+            }
+
+            // Calculate AIY
+            const aiy = totalCalls > 0 ? (internetSales / totalCalls) * 100 : 0;
+            const aiyAttainment = (aiy / aiyTarget) * 100;
+
+            // Determine brackets
+            let aiyBracket = 0; // 0 = Bracket 3, 1 = Bracket 2, 2 = Bracket 1
+            if (aiyAttainment > 100) aiyBracket = 2;
+            else if (aiyAttainment > 99.99) aiyBracket = 1;
+            else if (aiyAttainment > 90.99) aiyBracket = 1;
+            
+            let volBracket = 0;
+            if (totalVolume >= 170) volBracket = 2;
+            else if (totalVolume >= 120) volBracket = 1;
+            
+            // Final bracket is the lower of the two
+            const finalBracket = Math.min(aiyBracket, volBracket);
+            
+            // Calculate commission
+            let commission = 0;
+            const breakdown = [];
+
+            if (allQualifiersMet) {
+                // Internet
+                const internetCommission = (internetAdv * rateCard.internet.adv[finalBracket]) +
+                                         (internetPrem * rateCard.internet.premier[finalBracket]) +
+                                         (internetGig * rateCard.internet.gig[finalBracket]) +
+                                         (internet2Gig * rateCard.internet['2gig'][finalBracket]);
+                commission += internetCommission;
+                if (internetCommission > 0) {
+                    breakdown.push({ label: 'Internet Services', value: internetCommission, count: totalInternet });
+                }
+
+                // Video
+                const videoCommission = (videoChoice * rateCard.video.choice[finalBracket]) +
+                                      (videoSelect * rateCard.video.select[finalBracket]);
+                commission += videoCommission;
+                if (videoCommission > 0) {
+                    breakdown.push({ label: 'Video Services', value: videoCommission, count: totalVideo });
+                }
+
+                // Voice
+                const voiceCommission = voiceLines * rateCard.voice[finalBracket];
+                commission += voiceCommission;
+                if (voiceCommission > 0) {
+                    breakdown.push({ label: 'Voice Services', value: voiceCommission, count: voiceLines });
+                }
+
+                // Mobile
+                const mobileCommission = (mobileByGig * rateCard.mobile.byGig[finalBracket]) +
+                                       (mobileUnlimited * rateCard.mobile.unlimited[finalBracket]) +
+                                       (mobileUnlimitedPlus * rateCard.mobile.unlimitedPlus[finalBracket]);
+                commission += mobileCommission;
+                if (mobileCommission > 0) {
+                    breakdown.push({ label: 'Mobile Lines', value: mobileCommission, count: totalMobile });
+                }
+            }
+
+            // Top Performer Reward
+            let tpr = 0;
+            let tprTier = 'Not Eligible';
+            const aiyShiftMet = aiyAttainment >= 100;
+            const volumeShiftMet = totalVolume >= shiftTarget;
+            
+            if (aiyShiftMet && volumeShiftMet) {
+                const achievementPct = (totalVolume / shiftTarget) * 100;
+                if (achievementPct >= 121) {
+                    tpr = 1000;
+                    tprTier = 'Tier 1 - $1,000';
+                } else if (achievementPct >= 111) {
+                    tpr = 750;
+                    tprTier = 'Tier 2 - $750';
+                } else if (achievementPct >= 100) {
+                    tpr = 500;
+                    tprTier = 'Tier 3 - $500';
+                }
+            }
+
+            const totalEarnings = commission + tpr;
+
+            // Update Stats Display
+            document.getElementById('statsGrid').style.display = 'grid';
+            document.getElementById('resultsSection').style.display = 'block';
+            
+            // AIY Display
+            document.getElementById('aiyDisplay').textContent = aiyAttainment.toFixed(2) + '%';
+            const aiyBracketText = finalBracket === 2 ? 'Bracket 1' : finalBracket === 1 ? 'Bracket 2' : 'Bracket 3';
+            const aiyBracketClass = finalBracket === 2 ? 'bracket-1' : finalBracket === 1 ? 'bracket-2' : 'bracket-3';
+            document.getElementById('aiyBracket').innerHTML = `<span class="bracket-indicator ${aiyBracketClass}">${aiyBracketText}</span>`;
+            
+            // Volume Display
+            document.getElementById('volumeDisplay').textContent = totalVolume;
+            const volBracketText = finalBracket === 2 ? 'Bracket 1' : finalBracket === 1 ? 'Bracket 2' : 'Bracket 3';
+            document.getElementById('volumeBracket').innerHTML = `<span class="bracket-indicator ${aiyBracketClass}">${volBracketText}</span>`;
+
+            // Commission Display
+            document.getElementById('commissionDisplay').textContent = '$' + commission.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            
+            // TPR Display
+            document.getElementById('tprDisplay').textContent = '$' + tpr.toLocaleString();
+            document.getElementById('tprTier').textContent = tprTier;
+            if (tpr > 0) {
+                document.getElementById('tprBox').classList.add('success');
+                document.getElementById('tprBox').classList.remove('warning');
+            } else {
+                document.getElementById('tprBox').classList.add('warning');
+                document.getElementById('tprBox').classList.remove('success');
+            }
+
+            // Progress Bars
+            const aiyProgress = Math.min((aiyAttainment / 100) * 100, 100);
+            document.getElementById('aiyProgressBar').style.width = aiyProgress + '%';
+            document.getElementById('aiyProgressText').textContent = aiyAttainment.toFixed(2) + '% of ' + aiyTarget + '% target';
+            
+            const volProgress = Math.min((totalVolume / (finalBracket === 2 ? 170 : finalBracket === 1 ? 120 : 40)) * 100, 100);
+            document.getElementById('volumeProgressBar').style.width = volProgress + '%';
+            document.getElementById('volumeProgressText').textContent = totalVolume + ' units';
+
+            // Earnings Breakdown
+            const breakdownHTML = breakdown.map(item => `
+                <div class="earning-item">
+                    <div class="earning-label">${item.label} (${item.count} units)</div>
+                    <div class="earning-value">$${item.value.toFixed(2)}</div>
+                </div>
+            `).join('');
+            
+            const tprHTML = tpr > 0 ? `
+                <div class="earning-item bonus">
+                    <div class="earning-label">🏆 Top Performer Reward</div>
+                    <div class="earning-value">$${tpr.toFixed(2)}</div>
+                </div>
+            ` : '';
+            
+            const totalHTML = `
+                <div class="earning-item total">
+                    <div class="earning-label">TOTAL EARNINGS</div>
+                    <div class="earning-value">$${totalEarnings.toFixed(2)}</div>
+                </div>
+            `;
+
+            document.getElementById('earningsBreakdown').innerHTML = breakdownHTML + tprHTML + totalHTML;
+
+            // Add top performer badge if eligible
+            if (tpr > 0 && !document.querySelector('.top-performer-badge')) {
+                const badge = document.createElement('div');
+                badge.className = 'top-performer-badge';
+                badge.innerHTML = '🌟 Top Performer Achieved!';
+                document.getElementById('resultsSection').insertBefore(badge, document.getElementById('resultsSection').firstChild);
+            } else if (tpr === 0) {
+                const badge = document.querySelector('.top-performer-badge');
+                if (badge) badge.remove();
+            }
+
+            // DAILY GOALS CALCULATION
+            if (currentDay > 0 && daysWorked > 0) {
+                const daysRemaining = Math.max(0, daysInMonth - currentDay);
+                const currentPace = daysWorked > 0 ? totalVolume / daysWorked : 0;
+                const projectedTotal = currentPace * daysInMonth;
+                
+                // Calculate what's needed to hit different targets
+                const targets = [
+                    { name: 'Bracket 3 (40+)', vol: 40, aiy: 90.99 },
+                    { name: 'Bracket 2 (120+)', vol: 120, aiy: 91 },
+                    { name: 'Bracket 1 (170+)', vol: 170, aiy: 100 },
+                    { name: 'Shift Target', vol: shiftTarget, aiy: 100 }
+                ];
+
+                let dailyRequired = 0;
+                let targetName = '';
+                
+                // Find next target above current volume
+                for (let target of targets) {
+                    if (totalVolume < target.vol && daysRemaining > 0) {
+                        dailyRequired = Math.ceil((target.vol - totalVolume) / daysRemaining);
+                        targetName = target.name;
+                        break;
+                    }
+                }
+
+                // Update Daily Goals Panel
+                document.getElementById('dailyGoalsPanel').classList.add('active');
+                document.getElementById('dailyRequired').textContent = dailyRequired > 0 ? dailyRequired : '✓';
+                document.getElementById('daysRemaining').textContent = daysRemaining;
+                document.getElementById('currentPace').textContent = currentPace.toFixed(1);
+                document.getElementById('projectedMonthly').textContent = Math.round(projectedTotal);
+
+                // Daily earnings scenarios
+                const dailyScenarios = calculateDailyScenarios(finalBracket, allQualifiersMet, 
+                    internetAdv/daysWorked, internetPrem/daysWorked, internetGig/daysWorked, internet2Gig/daysWorked,
+                    videoChoice/daysWorked, videoSelect/daysWorked, voiceLines/daysWorked,
+                    mobileByGig/daysWorked, mobileUnlimited/daysWorked, mobileUnlimitedPlus/daysWorked);
+
+                document.getElementById('dailyEarningsBreakdown').innerHTML = dailyScenarios;
+
+                // Strategy recommendations
+                const strategies = generateStrategies(totalVolume, projectedTotal, currentPace, dailyRequired, 
+                    daysRemaining, allQualifiersMet, qInternet, qVideo, qMobile, aiyAttainment, aiyTarget);
+                document.getElementById('strategyList').innerHTML = strategies;
+
+                // Projection chart
+                updateProjectionChart(totalVolume, currentPace, daysInMonth, daysRemaining, shiftTarget, 
+                    finalBracket, allQualifiersMet, commission, tpr);
+            }
+        }
+
+        function calculateDailyScenarios(bracket, qualifiersMet, adv, prem, gig, gig2, vidCh, vidSel, voice, mobBg, mobUnl, mobUnlP) {
+            if (!qualifiersMet) {
+                return '<p style="color: #6c757d;">Meet minimum qualifiers (20 Internet, 10 Video, 10 Mobile) to see daily earning estimates.</p>';
+            }
+
+            const scenarios = [
+                { name: 'Conservative', multiplier: 0.8, color: 'scenario-conservative' },
+                { name: 'Current Pace', multiplier: 1.0, color: 'scenario-target' },
+                { name: 'Optimistic', multiplier: 1.3, color: 'scenario-optimistic' }
+            ];
+
+            let html = '';
+            scenarios.forEach(scen => {
+                const dailyVol = {
+                    adv: Math.round((adv * scen.multiplier) || 1),
+                    prem: Math.round((prem * scen.multiplier) || 1),
+                    gig: Math.round((gig * scen.multiplier) || 1),
+                    gig2: Math.round((gig2 * scen.multiplier) || 0),
+                    vidCh: Math.round((vidCh * scen.multiplier) || 1),
+                    vidSel: Math.round((vidSel * scen.multiplier) || 0),
+                    voice: Math.round((voice * scen.multiplier) || 0),
+                    mobBg: Math.round((mobBg * scen.multiplier) || 0),
+                    mobUnl: Math.round((mobUnl * scen.multiplier) || 1),
+                    mobUnlP: Math.round((mobUnlP * scen.multiplier) || 0)
+                };
+
+                const dailyCommission = 
+                    (dailyVol.adv * rateCard.internet.adv[bracket]) +
+                    (dailyVol.prem * rateCard.internet.premier[bracket]) +
+                    (dailyVol.gig * rateCard.internet.gig[bracket]) +
+                    (dailyVol.gig2 * rateCard.internet['2gig'][bracket]) +
+                    (dailyVol.vidCh * rateCard.video.choice[bracket]) +
+                    (dailyVol.vidSel * rateCard.video.select[bracket]) +
+                    (dailyVol.voice * rateCard.voice[bracket]) +
+                    (dailyVol.mobBg * rateCard.mobile.byGig[bracket]) +
+                    (dailyVol.mobUnl * rateCard.mobile.unlimited[bracket]) +
+                    (dailyVol.mobUnlP * rateCard.mobile.unlimitedPlus[bracket]);
+
+                html += `
+                    <div class="earning-item daily" style="margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <span class="scenario-badge ${scen.color}">${scen.name}</span>
+                                <span style="font-size: 0.85rem; color: #6c757d;">
+                                    ~${dailyVol.adv + dailyVol.prem + dailyVol.gig + dailyVol.gig2 + dailyVol.vidCh + dailyVol.vidSel + dailyVol.voice + dailyVol.mobBg + dailyVol.mobUnl + dailyVol.mobUnlP} units/day
+                                </span>
+                            </div>
+                            <div class="earning-value" style="font-size: 1.2rem;">$${dailyCommission.toFixed(2)}/day</div>
+                        </div>
+                        <div style="font-size: 0.8rem; color: #6c757d; margin-top: 5px;">
+                            Monthly projection: $${(dailyCommission * 22).toFixed(2)}
+                        </div>
+                    </div>
+                `;
+            });
+
+            return html;
+        }
+
+        function generateStrategies(currentVol, projected, pace, dailyNeeded, daysLeft, allQualifiers, qInt, qVid, qMob, aiyPct, aiyTarget) {
+            let strategies = [];
+
+            // Qualifier strategies
+            if (!allQualifiers) {
+                if (!qInt) strategies.push(`<li>⚠️ <strong>Priority:</strong> Need ${20 - (currentVol > 20 ? 0 : currentVol)} more Internet sales to meet minimum qualifier</li>`);
+                if (!qVid) strategies.push(`<li>⚠️ <strong>Priority:</strong> Need ${10} Video sales to meet minimum qualifier</li>`);
+                if (!qMob) strategies.push(`<li>⚠️ <strong>Priority:</strong> Need ${10} Mobile lines to meet minimum qualifier</li>`);
+            }
+
+            // Pace strategies
+            if (projected < 120 && daysLeft > 5) {
+                strategies.push(`<li>📈 <strong>Volume Gap:</strong> Projected ${Math.round(projected)} vs target 120+. Increase daily output by ${Math.ceil((120 - projected)/daysLeft)} units/day</li>`);
+            }
+
+            if (aiyPct < 100) {
+                strategies.push(`<li>🎯 <strong>AIY Focus:</strong> Currently at ${aiyPct.toFixed(1)}% vs ${aiyTarget}% target. Prioritize Internet sales over calls to boost yield</li>`);
+            }
+
+            if (dailyNeeded > 8) {
+                strategies.push(`<li>🔥 <strong>High Intensity:</strong> Need ${dailyNeeded}+ units/day. Focus on Premier Internet and Unlimited Mobile for higher commission per sale</li>`);
+            } else if (dailyNeeded > 0) {
+                strategies.push(`<li>✅ <strong>Manageable:</strong> Need ${dailyNeeded} units/day. Maintain current mix of products</li>`);
+            } else {
+                strategies.push(`<li>🌟 <strong>On Track:</strong> Exceeding targets! Focus on maintaining AIY and pushing for Top Performer Reward</li>`);
+            }
+
+            if (pace > 0 && pace < 5) {
+                strategies.push(`<li>💡 <strong>Efficiency:</strong> Low daily pace (${pace.toFixed(1)}/day). Review call quality and conversion techniques</li>`);
+            }
+
+            return strategies.join('');
+        }
+
+        function updateProjectionChart(currentVol, dailyPace, totalDays, daysLeft, shiftTarget, bracket, qualifiersMet, currentCommission, currentTPR) {
+            const scenarios = [
+                { name: 'Conservative (80% pace)', multiplier: 0.8, class: '' },
+                { name: 'Current Trajectory', multiplier: 1.0, class: 'highlight' },
+                { name: 'Optimistic (130% pace)', multiplier: 1.3, class: '' },
+                { name: 'Aggressive (150% pace)', multiplier: 1.5, class: '' }
+            ];
+
+            let html = '';
+            scenarios.forEach(scen => {
+                const projectedVol = Math.round(currentVol + (dailyPace * scen.multiplier * daysLeft));
+                const projectedBracket = projectedVol >= 170 ? 2 : projectedVol >= 120 ? 1 : 0;
+                
+                // Estimate commission (simplified)
+                const commissionMultiplier = projectedBracket === 2 ? 1.3 : projectedBracket === 1 ? 1.15 : 1.0;
+                const projectedCommission = currentCommission * (projectedVol / (currentVol || 1)) * commissionMultiplier;
+                
+                // Estimate TPR
+                let projectedTPR = 0;
+                if (projectedVol >= shiftTarget * 1.21) projectedTPR = 1000;
+                else if (projectedVol >= shiftTarget * 1.11) projectedTPR = 750;
+                else if (projectedVol >= shiftTarget) projectedTPR = 500;
+
+                const totalProjected = projectedCommission + projectedTPR;
+
+                html += `
+                    <div class="projection-row ${scen.class}">
+                        <div style="display: flex; align-items: center;">
+                            <span style="font-weight: 600; min-width: 150px;">${scen.name}</span>
+                            <span style="color: #6c757d; font-size: 0.9rem;">${projectedVol} units • Bracket ${projectedBracket + 1}</span>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-weight: 700; color: var(--primary);">$${totalProjected.toFixed(2)}</div>
+                            <div style="font-size: 0.8rem; color: #6c757d;">
+                                $${projectedCommission.toFixed(0)} + $${projectedTPR} TPR
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('projectionRows').innerHTML = html;
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function saveCalculation() {
+            const data = {
+                date: new Date().toLocaleDateString(),
+                totalCalls: document.getElementById('totalCalls').value,
+                internetSales: document.getElementById('internetSales').value,
+                totalVolume: document.getElementById('volumeDisplay').textContent,
+                aiy: document.getElementById('aiyDisplay').textContent,
+                commission: document.getElementById('commissionDisplay').textContent,
+                tpr: document.getElementById('tprDisplay').textContent,
+                total: document.querySelector('.earning-item.total .earning-value').textContent
+            };
+
+            let history = JSON.parse(localStorage.getItem('calculations') || '[]');
+            history.unshift(data);
+            if (history.length > 10) history = history.slice(0, 10);
+            localStorage.setItem('calculations', JSON.stringify(history));
+
+            showNotification();
+            loadHistory();
+        }
+
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('calculations') || '[]');
+            const container = document.getElementById('historyList');
+            
+            if (history.length === 0) {
+                container.innerHTML = '<p style="color: #6c757d; text-align: center; padding: 40px;">No saved calculations yet.</p>';
+                return;
+            }
+
+            container.innerHTML = history.map((calc, index) => `
+                <div style="background: #f8f9fa; padding: 20px; margin-bottom: 15px; border-radius: 12px; border-left: 4px solid var(--secondary);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <strong>${calc.date}</strong>
+                        <span style="color: var(--success); font-weight: bold;">${calc.total}</span>
+                    </div>
+                    <div style="font-size: 0.9rem; color: #6c757d; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div>AIY: ${calc.aiy}</div>
+                        <div>Volume: ${calc.totalVolume}</div>
+                        <div>Commission: ${calc.commission}</div>
+                        <div>TPR: ${calc.tpr}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showNotification() {
+            const notif = document.getElementById('saveNotification');
+            notif.style.display = 'block';
+            setTimeout(() => {
+                notif.style.display = 'none';
+            }, 3000);
+        }
+
+        function resetForm() {
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                if (input.id !== 'aiyTarget' && input.id !== 'shiftTarget' && input.id !== 'daysInMonth') {
+                    input.value = '';
+                }
+            });
+            document.getElementById('statsGrid').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('dailyGoalsPanel').classList.remove('active');
+            calculate();
+        }
+
+        // Auto-set current day on load
+        window.onload = function() {
+            loadHistory();
+            const today = new Date();
+            document.getElementById('currentDay').value = today.getDate();
+            
+            // Auto-calculate if we have saved data (optional enhancement)
+            const lastCalc = localStorage.getItem('lastInputs');
+            if (lastCalc) {
+                // Could restore previous inputs here if desired
+            }
+        };
+
+        // Auto-save inputs as user types (optional)
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('change', function() {
+                // Could implement auto-save to localStorage here
+            });
+        });
+    </script>
+</body>
+</html>
